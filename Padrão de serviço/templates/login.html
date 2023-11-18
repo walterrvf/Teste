@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Padrão de serviço digital</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* Seus estilos CSS existentes */
+        .password-input {
+            border: 1px solid #ccc;
+            padding: 5px;
+            color: transparent;
+            background-color: transparent;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1>Padrão de serviço digital</h1>
+        <form method="POST" onsubmit="setUsernameAndPassword(event)">
+            <label for="password">Passe o crachá</label>
+            <input type="password" name="password" id="password" class="password-input" placeholder="Passe o chachá de acesso" required>
+            <input type="hidden" name="username" id="username">
+            <button type="submit">Entrar</button>
+        </form>
+    </div>
+
+    <script>
+        window.onload = function() {
+            // Define o foco no campo de senha assim que a página carrega
+            document.getElementById('password').focus();
+        };
+
+        function setUsernameAndPassword(event) {
+            event.preventDefault(); // Impede o envio do formulário
+
+            var passwordField = document.getElementById('password');
+            var usernameField = document.getElementById('username');
+
+            // Define o valor do campo de nome de usuário igual ao valor do campo de senha
+            usernameField.value = passwordField.value;
+
+            // Submeta o formulário manualmente
+            event.target.submit();
+        }
+    </script>
+</body>
+</html>

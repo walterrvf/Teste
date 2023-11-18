@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>List of PDFs</title>
+</head>
+<body>
+    <h1>List of PDFs</h1>
+    <ul id="pdf-list">
+        <!-- Os itens da lista serão preenchidos pelo JavaScript -->
+    </ul>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/get_pdfs')  // Substitua '/get_pdfs' pelo endpoint correto do seu servidor
+            .then(response => response.json())
+            .then(data => {
+                var pdfList = document.getElementById('pdf-list');
+                data.forEach(pdf => {
+                    var listItem = document.createElement('li');
+                    listItem.innerHTML = `<strong>File Path:</strong> ${pdf.file_path} <br>
+                        <a href="/static/${pdf.file_path}">Download PDF</a>`;
+                    pdfList.appendChild(listItem);
+                });
+            })
+            .catch(error => console.error('Erro ao carregar PDFs:', error));
+        });
+    </script>
+</body>
+</html>

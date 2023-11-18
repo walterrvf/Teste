@@ -1,0 +1,528 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Administração - Acesso aos PDFs</title>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('serve_static', filename='styles.css') }}">
+        <style>
+            /* Adicione seus estilos CSS aqui */
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f4;
+            }
+
+
+                /* Adicione seus estilos CSS aqui */
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+    }
+
+    /* Estilos adicionais aqui */
+    .top-bar button {
+        background-color: transparent;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .admin-container {
+        max-width: 800px;
+        margin: 20px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Estilo para o botão de alternar visibilidade */
+    .toggle-button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-size: 16px;
+        margin-bottom: 10px; /* Espaçamento entre o botão e o formulário */
+    }
+
+    .toggle-button:hover {
+        background-color: #0056b3;
+    }
+
+       /* Estilos adicionais aqui */
+
+
+
+            .admin-container {
+                max-width: 800px;
+                margin: 20px auto;
+                background-color: #fff;
+                padding: 20px;
+                border-radius: 5px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+
+            h1 {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+
+            .create-user-container {
+                margin: 20px 0;
+                padding: 20px;
+                background-color: #f4f4f4;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+
+            form input[type="text"],
+            form input[type="password"],
+            form select {
+                width: 100%;
+                margin: 10px 0;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+
+            form button.create-user-button {
+                background-color: #007bff;
+                color: #fff;
+                border: none;
+                padding: 10px 15px;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+                font-size: 16px;
+            }
+
+            form button.create-user-button:hover {
+                background-color: #0056b3;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            th, td {
+                padding: 12px 15px;
+                text-align: center;
+            }
+
+            th {
+                background-color: #007bff;
+                color: #fff;
+            }
+
+            tr:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+
+            tr:hover {
+                background-color: #ddd;
+            }
+
+
+
+            .admin-actions button {
+                background-color: #007bff;
+                color: #fff;
+                border: none;
+                padding: 5px 10px;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+                font-size: 14px;
+                margin-right: 5px;
+            }
+
+            .admin-actions button:hover {
+                background-color: #0056b3;
+            }
+
+            .pdf-list {
+                list-style-type: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .pdf-list li {
+                margin-bottom: 10px;
+            }
+
+            .pdf-modal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.7);
+                z-index: 1;
+                overflow: auto;
+            }
+
+            .pdf-modal-content {
+                background-color: #fff;
+                margin: 15% auto;
+                padding: 20px;
+                border: 1px solid #888;
+                width: 60%;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .pdf-modal-content h2 {
+                margin-top: 0;
+            }
+
+            .close-pdf-modal {
+                color: #888;
+                float: right;
+                font-size: 28px;
+                font-weight: bold;
+                cursor: pointer;
+            }
+
+            .close-pdf-modal:hover {
+                color: #000;
+            }
+
+            .pdf-system-list {
+                list-style-type: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .modal {
+                display: none;
+                position: fixed;
+                z-index: 1;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                overflow: auto;
+                background-color: rgb(0,0,0);
+                background-color: rgba(0,0,0,0.4);
+            }
+
+            .modal-content {
+                background-color: #fefefe;
+                margin: 15% auto;
+                padding: 20px;
+                border: 1px solid #888;
+                width: 80%;
+            }
+
+            .close {
+                color: #aaa;
+                float: right;
+                font-size: 28px;
+                font-weight: bold;
+            }
+
+            .close:hover,
+            .close:focus {
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+/* Estilos para a tabela dentro da modal */
+.pdf-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+}
+
+.pdf-table th,
+.pdf-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.pdf-table th {
+    background-color: #007bff;
+    color: white;
+}
+
+.pdf-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* Estilo para o botão de atualizar dentro da modal */
+.update-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.update-button:hover {
+    background-color: #218838;
+}
+
+
+
+        </style>
+    </head>
+    <body>
+        <div class="top-bar">
+            <button class="logout-button" onclick="location.href='{{ url_for('logout') }}'">Logout</button>
+
+
+        </div>
+    
+        <div class="admin-container">
+            <h1>Painel do administrador</h1>
+    
+
+            <div id="pdfModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal()">&times;</span>
+                    <h2>Padrões Assinados</h2>
+                    <div id="modal-body"></div>
+                </div>
+            </div>
+
+
+            <!-- Botão para mostrar/ocultar o formulário de adição de colaborador -->
+            <button id="toggle-create-user-container" class="toggle-button">Adicionar Colaborador</button>
+            <button class="toggle-button" onclick="location.href='{{ url_for('login_logs') }}'">Logs de acessos</button>
+            <button class="toggle-button" onclick="location.href='{{ url_for('create_page') }}'">Adicionar novo padrão</button>
+    
+            <!-- Container para criar um novo usuário, inicialmente oculto -->
+            <div class="create-user-container" style="display: none;">
+                <h2>Adicionar colaborador</h2>
+                <form method="POST" action="{{ url_for('create_user') }}">
+                    <input type="text" name="nome" placeholder="Matricula" required>
+                    <input type="password" name="new_username" placeholder="Cartão" required>
+                    <input type="password" name="new_password" placeholder="Cartão" required>
+                    <select name="user_type" required>
+                        <option value="common">Usuário Comum</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                    <button type="submit" class="create-user-button">Criar</button>
+                </form>
+            </div>
+            <table>
+                <tr>
+                    <th>Matricula</th>
+                    <th>Admin</th>
+                    <th>Ações</th>
+                    <th>Modificar</th>
+                </tr>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.nome }}</td>  <!-- Exibe o nome do usuário -->
+                    <td>{{ "Sim" if user.is_admin else "Não" }}</td>
+                    <td class="admin-actions">
+                        <button type="button" onclick="toggleUserPdfs({{ user.id }})">Padrões Assinados</button>
+                        
+                        <!-- Modal para cada usuário -->
+                        <div id="pdf-modal-{{ user.id }}" class="pdf-modal">
+                            <div class="pdf-modal-content" id="pdf-list-{{ user.id }}">
+    
+                        <button type="button" onclick="updateUserAccess({{ user.id }})">Atualizar</button></td>
+                    
+
+
+
+
+
+
+                        <td class="admin-actions">
+                        <button type="button" onclick="showChangePasswordForm({{ user.id }})">Trocar cartão</button>
+                        <div id="change-password-form-{{ user.id }}" class="change-password-form" style="display: none;">
+                        <input type="password" id="new-password-{{ user.id }}" placeholder="Nova Senha">
+                        <button type="button" onclick="changeUserPassword({{ user.id }})">Salvar cartão</button></div>
+                        <form method="POST" action="{{ url_for('delete_user', user_id=user.id) }}">
+                            <input type="hidden" name="user_id" value="{{ user.id }}">
+                            <button type="submit" class="delete-user-button">Excluir</button>
+                            </td>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <script>
+
+            document.getElementById('toggle-create-user-container').addEventListener('click', function() {
+                        var container = document.querySelector('.create-user-container');
+                        container.style.display = container.style.display === 'none' ? 'block' : 'none';
+                    });
+
+
+
+
+                    function toggleUserPdfs(userId) {
+    const modal = document.getElementById('pdf-modal-' + userId);
+    const pdfListDiv = modal.querySelector('.pdf-modal-content');
+
+    if (modal.style.display === "block") {
+        modal.style.display = "none";
+    } else {
+        modal.style.display = "block";
+        fetch('/get_user_pdfs/' + userId)
+            .then(response => response.json())
+            .then(data => {
+                // Criação da tabela
+                const table = document.createElement('table');
+                table.className = 'pdf-table';
+
+                // Cabeçalho da tabela
+                const thead = document.createElement('thead');
+                const trHead = document.createElement('tr');
+                const thName = document.createElement('th');
+                thName.textContent = 'Padrões de serviço';
+                const thAccess = document.createElement('th');
+                thAccess.textContent = 'Acesso';
+                trHead.appendChild(thName);
+                trHead.appendChild(thAccess);
+                thead.appendChild(trHead);
+                table.appendChild(thead);
+
+                // Corpo da tabela
+                const tbody = document.createElement('tbody');
+                data.forEach(pdf => {
+                    const tr = document.createElement('tr');
+                    const tdName = document.createElement('td');
+                    // Substituição dos underscores por espaços
+                    tdName.textContent = pdf.file_path.split('/').pop().split('\\').pop().replace('.html', '').replace(/_/g, ' ')
+                    const tdCheckbox = document.createElement('td');
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.id = 'pdf-' + pdf.id;
+                    checkbox.checked = pdf.access;
+                    tdCheckbox.appendChild(checkbox);
+                    tr.appendChild(tdName);
+                    tr.appendChild(tdCheckbox);
+                    tbody.appendChild(tr);
+                });
+                table.appendChild(tbody);
+                pdfListDiv.innerHTML = '';
+                pdfListDiv.appendChild(table);
+
+                // Botão de atualização
+                const updateButton = document.createElement('button');
+                updateButton.className = 'update-button';
+                updateButton.textContent = 'Atualizar Acesso';
+                updateButton.onclick = function() { 
+                    updateUserAccess(userId); 
+                    modal.style.display = "none"; // Fecha o modal após atualizar
+                };
+                pdfListDiv.appendChild(updateButton);
+            })
+            .catch(error => {
+                console.error('Erro ao carregar PDFs para o usuário:', error);
+                
+            });
+    }
+}
+
+
+        // Função para atualizar os acessos aos PDFs
+        function updateUserAccess(userId) {
+            const modal = document.getElementById('pdf-modal-' + userId);
+            const checkboxes = modal.querySelectorAll('input[type="checkbox"]');
+            const selectedPdfIds = Array.from(checkboxes)
+                                        .filter(checkbox => checkbox.checked)
+                                        .map(checkbox => checkbox.id.replace('pdf-', ''));
+            fetch('/update_user_access', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ user_id: userId, pdf_ids: selectedPdfIds }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => {
+                console.error('Erro ao atualizar o acesso:', error);
+                alert('Ocorreu um erro ao atualizar o acesso.');
+            });
+        }
+
+         // Fechar o modal ao clicar fora dele
+        window.onclick = function(event) {
+            document.querySelectorAll('.pdf-modal').forEach(modal => {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            });
+        }
+
+
+            function showChangePasswordForm(userId) {
+                var form = document.getElementById('change-password-form-' + userId);
+                form.style.display = 'block';
+            }
+
+            function changeUserPassword(userId) {
+                var newPasswordInput = document.getElementById('new-password-' + userId);
+                var newPassword = newPasswordInput.value;
+                // Certifique-se de validar a nova senha antes de enviá-la
+
+                fetch('/change_user_password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // Aqui você deve incluir o cabeçalho de autenticação, se necessário
+                    },
+                    body: JSON.stringify({ user_id: userId, new_password: newPassword }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Senha alterada com sucesso!');
+                        var form = document.getElementById('change-password-form-' + userId);
+                        form.style.display = 'none';
+                        newPasswordInput.value = ''; // Limpe o campo de senha
+                    } else {
+                        alert('Erro ao alterar a senha: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    alert('Ocorreu um erro ao atualizar a senha: ' + error.message);
+                });
+            }
+
+            document.querySelectorAll('.delete-user-button').forEach(button => {
+        button.addEventListener('click', function(event) {
+            var confirmDelete = confirm("Tem certeza que deseja excluir este usuário?");
+            if (!confirmDelete) {
+                event.preventDefault(); // Interrompe o envio do formulário se o usuário clicar em "Cancelar"
+            }
+        });
+    });
+
+
+
+
+
+
+
+    
+        </script>
+    </body>
+    </html>

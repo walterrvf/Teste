@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* Variáveis de cores */
+        :root {
+            --primary-color: #007bff;
+            --danger-color: #ff5555;
+            --hover-primary-color: #0056b3;
+            --hover-danger-color: #ff3333;
+        }
+
+        /* Estilo geral para o corpo da página */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+        }
+
+
+        .top-bar button {
+            background-color: transparent;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Estilos para formulário e tabela */
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 15px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <button onclick="location.href='{{ url_for('logout') }}'">Logout</button>
+    </div>
+    <div class="home-container">
+        <h1>Você está habilitado em:</h1>
+        <p>Você tem acesso em {{ accessible_pdfs|length }} padrão de seriviço na Pintura Plástica</p>
+        <ul>
+            {% for pdf in accessible_pdfs %}
+                <li>
+                    <!-- Botão com data-pdf contendo o caminho completo do arquivo -->
+                    <button class="pdf-button" data-pdf="{{ pdf.file_path }}"></button>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <script>
+        // Adiciona os nomes dos arquivos aos botões e configura os eventos de clique
+        document.querySelectorAll('.pdf-button').forEach(function(button) {
+    var pdfPath = button.getAttribute('data-pdf');
+    var fileName = pdfPath.split('/').pop().split('\\').pop().replace('.html', '').replace(/_/g, ' '); // Extrai o nome do arquivo após a última barra (ou barra invertida) e substitui underlines por espaços
+    button.textContent = fileName;
+
+    button.addEventListener('click', function() {
+        window.location.href = "/uploads/" + pdfPath;
+    });
+});
+
+
+    </script>
+</body>
+</html>
